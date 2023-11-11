@@ -17,11 +17,11 @@ describe('Camel case converter', () => {
     expect(toCamelCase('Gummy_Teddy-Bear')).toBe('GummyTeddyBear')
   })
 
-  it('Every first letter of each words should be a capital letter', () => {
+  it('Verifies every first letter of each word should be a capital letter', () => {
     expect(toCamelCase('gummy teddy')).toBe('GummyTeddy')
   })
 
-  it('Every word should only have first letter capitalized', () => {
+  it('Verifies every word should only have first letter capitalized', () => {
     expect(toCamelCase('GuMMy-TeDdy Bear')).toBe('GummyTeddyBear')
   })
 })
