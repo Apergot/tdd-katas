@@ -30,6 +30,18 @@ describe('The Surveillance Controller', () => {
 		expect(spyRecorder).toHaveBeenCalled();
 		expect(sensor.isDetectingMotion()).toBe(true);
 	});
+
+	it('should ask the recorder to stop  recording when sensor throws an unexpected error', () => {
+		const stubSensor = jest.spyOn(sensor, 'isDetectingMotion');
+		stubSensor.mockImplementation(() => {
+			throw new Error('unexpected error');
+		});
+		const spyRecorder = jest.spyOn(recorder, 'stopRecording');
+
+		controller.recordMotion();
+
+		expect(spyRecorder).toHaveBeenCalled();
+	});
 });
 
 class FakeSensor implements MotionSensor {
