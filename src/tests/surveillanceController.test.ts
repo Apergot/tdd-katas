@@ -2,13 +2,12 @@ import { MotionSensor, SurveillanceController, VideoRecorder } from '../core/sur
 
 describe('The Surveillance Controller', () => {
 	it('should ask the recorder to stop recording when the sensor detects no motion', () => {
-		//Using monkey patching we created a spy of stop recording method by replacing it
 		let called = false;
 		const saveCall = () => {
 			called = true;
 		};
 
-		const sensor = new FakeSensor();
+		const sensor = new StubSensorDetectingNoMotion();
 		const recorder = new FakeRecorder();
 		recorder.stopRecording = saveCall;
 		const controller = new SurveillanceController(sensor, recorder);
@@ -19,16 +18,12 @@ describe('The Surveillance Controller', () => {
 	});
 
 	it('should ask the recorder to start recording when the sensor detects motion', () => {
-		//Using monkey patching we created a spy of start recording method by replacing it
 		let called = false;
 		const saveCall = () => {
 			called = true;
 		};
 
-		//need to create a sensor stub to simulate motion detected
-		const sensor = new FakeSensor();
-		sensor.isDetectingMotion = () => true;
-
+		const sensor = new StubSensorDetectingMotion();
 		const recorder = new FakeRecorder();
 		recorder.startRecording = saveCall;
 		const controller = new SurveillanceController(sensor, recorder);
@@ -39,9 +34,15 @@ describe('The Surveillance Controller', () => {
 	});
 });
 
-class FakeSensor implements MotionSensor {
+class StubSensorDetectingNoMotion implements MotionSensor {
 	isDetectingMotion(): boolean {
 		return false;
+	}
+}
+
+class StubSensorDetectingMotion implements MotionSensor {
+	isDetectingMotion(): boolean {
+		return true;
 	}
 }
 
