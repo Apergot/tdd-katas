@@ -2,35 +2,23 @@ import { MotionSensor, SurveillanceController, VideoRecorder } from '../core/sur
 
 describe('The Surveillance Controller', () => {
 	it('should ask the recorder to stop recording when the sensor detects no motion', () => {
-		let called = false;
-		const saveCall = () => {
-			called = true;
-		};
-
 		const sensor = new StubSensorDetectingNoMotion();
-		const recorder = new FakeRecorder();
-		recorder.stopRecording = saveCall;
+		const recorder = new SpyRecorder();
 		const controller = new SurveillanceController(sensor, recorder);
 
 		controller.recordMotion();
 
-		expect(called).toBeTruthy();
+		expect(recorder.stopRecordingCalled).toBeTruthy();
 	});
 
 	it('should ask the recorder to start recording when the sensor detects motion', () => {
-		let called = false;
-		const saveCall = () => {
-			called = true;
-		};
-
 		const sensor = new StubSensorDetectingMotion();
-		const recorder = new FakeRecorder();
-		recorder.startRecording = saveCall;
+		const recorder = new SpyRecorder();
 		const controller = new SurveillanceController(sensor, recorder);
 
 		controller.recordMotion();
 
-		expect(called).toBeTruthy();
+		expect(recorder.startRecordingCalled).toBeTruthy();
 	});
 });
 
@@ -46,14 +34,15 @@ class StubSensorDetectingMotion implements MotionSensor {
 	}
 }
 
-class FakeRecorder implements VideoRecorder {
+class SpyRecorder implements VideoRecorder {
+	startRecordingCalled = false;
+	stopRecordingCalled = false;
+
 	startRecording(): void {
-		// eslint-disable-next-line no-console
-		console.log('start recording ...');
+		this.startRecordingCalled = true;
 	}
 
 	stopRecording(): void {
-		// eslint-disable-next-line no-console
-		console.log('stop recording ...');
+		this.stopRecordingCalled = true;
 	}
 }
